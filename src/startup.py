@@ -22,7 +22,9 @@ import os
 
 import tensorflow as tf
 import torch
-from src.utils import *
+
+from src.utils.core import *
+
 
 # Uncommonly Used Libraries
 from sklearn.utils.class_weight import compute_class_weight
@@ -56,63 +58,6 @@ def _setup_jupyter_notebook():
     except: 
         print('could not load ipython magic extensions')
 _setup_jupyter_notebook()
-
-
-# Solve Environment, Hardware & Online Status
-def _solve_env(): 
-    if 'KAGGLE_CONTAINER_NAME' in os.environ: 
-        return 'Kaggle'
-    elif Path('/content/').exists(): 
-        return 'Colab'
-    else: 
-        return 'Local'
-def _solve_hardware(): 
-    if torch.cuda.is_available(): 
-        print('GPU Device:', colored(torch.cuda.get_device_name(0), 'green'))
-        return 'GPU'
-    elif 'TPU_NAME' in os.environ: 
-        return 'TPU'
-    else: 
-        return 'CPU'
-def _solve_online_status(): 
-    try: 
-        os.system('pip install wandb')
-        return True
-    except: 
-        return False
-    
-ENV = _solve_env()
-HARDWARE = _solve_hardware()
-IS_ONLINE = _solve_online_status()
-print('Notebook running on', colored(ENV, 'blue'), 'on ', colored(HARDWARE, 'blue'))
-
-
-# Useful Paths for each environment
-KAGGLE_INPUT_DIR = Path('/kaggle/input')
-if ENV == 'Colab': 
-    WORKING_DIR = Path('/content')
-    TMP_DIR = Path('/content/tmp')
-elif ENV == 'Kaggle': 
-    WORKING_DIR = Path('/kaggle/working')
-    TMP_DIR = Path('/kaggle/tmp')
-else: 
-    WORKING_DIR = Path('C:/Users/sarth/Desktop/chai')
-    TMP_DIR = WORKING_DIR / 'tmp'
-
-# Check if repo is loaded correctly
-def _ensure_repo_dir_is_correct(): 
-    if ENV == 'Kaggle': 
-        assert Path('/kaggle/working/temp').exists(), red('Wrong Repo Directory')
-    elif ENV == 'Colab': 
-        assert Path('/content/temp').exists(), red('Wrong Repo Directory')
-_ensure_repo_dir_is_correct()
-    
-# Mount Drive in Colab
-def _mount_drive(): 
-    from google.colab import drive
-    drive.mount('/content/drive')
-if ENV == 'Colab': 
-    _mount_drive()
 
 
 # Startup Notebook Functions

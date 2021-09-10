@@ -2,7 +2,7 @@ import tensorflow_addons as tfa
 import tensorflow as tf
 from termcolor import colored 
 
-def tf_lr_scheduler_factory(lr_scheduler_kwargs): 
+def lr_scheduler_factory(lr_scheduler_kwargs): 
     if isinstance(lr_scheduler_kwargs, float): 
         print(colored('Using constant learning rate', 'yellow'))
         return lr_scheduler_kwargs
@@ -14,7 +14,7 @@ def tf_lr_scheduler_factory(lr_scheduler_kwargs):
     )
     return lr_scheduler
 
-def tf_optimizer_factory(optimizer_kwargs, lr_scheduler): 
+def optimizer_factory(optimizer_kwargs, lr_scheduler): 
     optimizer_name = optimizer_kwargs['name']
     if optimizer_name == 'AdamW': 
         optimizer = tfa.optimizers.AdamW(
@@ -23,6 +23,7 @@ def tf_optimizer_factory(optimizer_kwargs, lr_scheduler):
             amsgrad=False, 
             clipnorm=optimizer_kwargs['max_grad_norm'], 
             epsilon=optimizer_kwargs['epsilon'], 
+            beta_2=optimizer_kwargs['beta2'], 
         )
     elif optimizer_name == 'Adagrad': 
         optimizer = tf.keras.optimizers.Adagrad(
