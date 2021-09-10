@@ -1,3 +1,3 @@
 import tensorflow as tf
+from .startup import *
 
-AUTO = { 'num_parallel_calls': tf.data.AUTOTUNE }
